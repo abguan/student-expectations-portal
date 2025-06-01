@@ -5,6 +5,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- Allow inline <script> and WordCloud/QRCode eval -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdnjs.cloudflare.com https://www.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Expectations • QR Launcher</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -22,24 +24,11 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-  // Generate a unique session id (base‑36 timestamp) every load
   const session = Date.now().toString(36);
-
-  // Compute repo‑aware base path, e.g.
-  // https://username.github.io/repo/  →  https://username.github.io/repo/
   const base = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}`;
-
   const submitURL  = `${base}submit.html?session=${session}`;
   const summaryURL = `${base}summary.html?session=${session}`;
-
-  new QRCode(document.getElementById('qrcode'), {
-    text: submitURL,
-    width:256,
-    height:256,
-    correctLevel:QRCode.CorrectLevel.H
-  });
-
-  // Show summary link for teacher convenience
+  new QRCode(document.getElementById('qrcode'),{text:submitURL,width:256,height:256,correctLevel:QRCode.CorrectLevel.H});
   document.getElementById('summaryLink').textContent = summaryURL;
 </script>
 </body>
