@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdnjs.cloudflare.com https://www.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdnjs.cloudflare.com https://www.gstatic.com https://firestore.googleapis.com https://*.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://www.gstatic.com; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Tell Us What You Expect</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"/>
@@ -36,7 +36,8 @@
   storageBucket: "expectations-45f78.firebasestorage.app",
   messagingSenderId: "633399606403",
   appId: "1:633399606403:web:5bd620cb29bb06f4056fb6",
-  measurementId: "G-XRD414N7LK"};
+  measurementId: "G-XRD414N7LK"
+  };
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const params = new URLSearchParams(window.location.search);
@@ -45,9 +46,13 @@
     e.preventDefault();
     const txt=document.getElementById('student-input').value.trim();
     if(!txt) return;
-    await addDoc(collection(db,'sessions',session,'inputs'),{text:txt,ts:Date.now()});
-    document.getElementById('thanks').style.display='block';
-    setTimeout(()=>{window.location.href=`summary.html?session=${session}`;},800);
+    try{
+      await addDoc(collection(db,'sessions',session,'inputs'),{text:txt,ts:Date.now()});
+      document.getElementById('thanks').style.display='block';
+      setTimeout(()=>{window.location.href=`summary.html?session=${session}`;},800);
+    }catch(err){
+      alert('Failed to save: '+err.message);
+    }
   });
 </script>
 </body>
