@@ -29,7 +29,14 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
-  const firebaseConfig = YOUR_FIREBASE_CONFIG;
+  const firebaseConfig = {
+  apiKey: "AIzaSyAYxprcIhSDgfICthWLCp9kg72FjU9viDw",
+  authDomain: "expectations-45f78.firebaseapp.com",
+  projectId: "expectations-45f78",
+  storageBucket: "expectations-45f78.firebasestorage.app",
+  messagingSenderId: "633399606403",
+  appId: "1:633399606403:web:5bd620cb29bb06f4056fb6",
+  measurementId: "G-XRD414N7LK"};
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const params = new URLSearchParams(window.location.search);
