@@ -1,0 +1,64 @@
+<!-- =================================================
+ summary.html – Live word cloud (Teacher & Students)
+================================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class Word Cloud</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.2/wordcloud2.min.js"></script>
+<style>
+  body{margin:0;padding:0;background:#1d1f21;color:#eee;font-family:'Press Start 2P',cursive;text-align:center}
+  #wordcloud{width:100%;height:400px;margin-top:40px}
+</style>
+</head>
+<body>
+  <h1>📊 Class Expectations Word Cloud</h1>
+  <canvas id="wordcloud"></canvas>
+  <p style="font-size:10px">Auto‑updates as new expectations arrive.</p>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+  import { getFirestore, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+ 
+  const firebaseConfig = {
+  apiKey: "AIzaSyAYxprcIhSDgfICthWLCp9kg72FjU9viDw",
+  authDomain: "expectations-45f78.firebaseapp.com",
+  projectId: "expectations-45f78",
+  storageBucket: "expectations-45f78.firebasestorage.app",
+  messagingSenderId: "633399606403",
+  appId: "1:633399606403:web:5bd620cb29bb06f4056fb6",
+  measurementId: "G-XRD414N7LK"
+ };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const params = new URLSearchParams(window.location.search);
+  const session = params.get('session') || 'default';
+
+  const stopwords = new Set(['the','and','a','to','of','in','for','is','on','that','with','it','this','i','we','our','my','me','you','your','are','be','an']);
+  const inputs=[];
+
+  function renderCloud(){
+    const freq={};
+    inputs.forEach(sentence=>{
+      sentence.toLowerCase().split(/[^a-zA-Z0-9]+/).forEach(w=>{if(w&&!stopwords.has(w)){freq[w]=(freq[w]||0)+1}});
+    });
+    const list=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([w,n])=>[w,n*20]);
+    WordCloud(document.getElementById('wordcloud'),{list,backgroundColor:'#1d1f21',gridSize:8,fontFamily:"'Press Start 2P',cursive",color:()=>'#3dff76',weightFactor:10,rotateRatio:0});
+  }
+
+  // Live listener
+  const q=query(collection(db,'sessions',session,'inputs'));
+  onSnapshot(q,snap=>{
+    inputs.length=0; // reset
+    snap.forEach(doc=>inputs.push(doc.data().text));
+    renderCloud();
+  });
+</script>
+</body>
+</html>
