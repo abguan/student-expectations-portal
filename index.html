@@ -1,0 +1,35 @@
+<!-- =================================================
+ index.html – QR code + session setup (Teacher page)
+================================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expectations • QR Launcher</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;padding:0;background:#1d1f21;color:#eee;font-family:'Press Start 2P',cursive;text-align:center}
+  .panel{display:inline-block;background:#2d2f33;border:4px solid #eee;margin:40px auto;padding:40px;image-rendering:pixelated}
+</style>
+</head>
+<body>
+  <div class="panel">
+    <h1>📸 Scan to Share Your Expectations</h1>
+    <div id="qrcode"></div>
+    <p style="font-size:12px">Students: open the link &gt; type &gt; send.<br>Teacher: open <code id="summaryLink"></code> to watch the cloud.</p>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // Generate a unique session id (base‑36 timestamp) every load
+  const session = Date.now().toString(36);
+  const origin = window.location.origin;
+  const submitURL = `${origin}/submit.html?session=${session}`;
+  const summaryURL = `${origin}/summary.html?session=${session}`;
+
+  new QRCode(document.getElementById('qrcode'), {text: submitURL,width:256,height:256,correctLevel:QRCode.CorrectLevel.H});
+  document.getElementById('summaryLink').textContent = summaryURL;
+</script>
+</body>
+</html>
