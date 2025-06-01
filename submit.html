@@ -1,0 +1,62 @@
+<!-- =================================================
+ submit.html – Student input page
+================================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tell Us What You Expect</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;padding:20px;background:#1d1f21;color:#eee;font-family:'Press Start 2P',cursive;text-align:center}
+  textarea{width:100%;height:120px;background:#1d1f21;color:#fff;border:4px solid #eee;padding:10px;font-size:12px}
+  button{margin-top:20px;font-family:'Press Start 2P',cursive;font-size:14px;padding:10px 20px;border:4px solid #eee;background:#3dff76;cursor:pointer}
+  .panel{max-width:600px;margin:60px auto;image-rendering:pixelated}
+</style>
+</head>
+<body>
+  <div class="panel">
+    <h1>💬 Your Expectation</h1>
+    <form id="chat-form">
+      <textarea id="student-input" placeholder="Type here..."></textarea><br>
+      <button type="submit">Submit</button>
+    </form>
+    <p id="thanks" style="display:none">Thanks! Redirecting…</p>
+  </div>
+
+<!-- Firebase & logic -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAYxprcIhSDgfICthWLCp9kg72FjU9viDw",
+  authDomain: "expectations-45f78.firebaseapp.com",
+  projectId: "expectations-45f78",
+  storageBucket: "expectations-45f78.firebasestorage.app",
+  messagingSenderId: "633399606403",
+  appId: "1:633399606403:web:5bd620cb29bb06f4056fb6",
+  measurementId: "G-XRD414N7LK"
+};
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Extract session id from URL
+  const params = new URLSearchParams(window.location.search);
+  const session = params.get('session') || 'default';
+
+  document.getElementById('chat-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const txt = document.getElementById('student-input').value.trim();
+    if(!txt) return;
+    await addDoc(collection(db, 'sessions', session, 'inputs'), {text: txt, ts: Date.now()});
+    document.getElementById('thanks').style.display='block';
+    setTimeout(()=>{
+      window.location.href = `summary.html?session=${session}`;
+    },800);
+  });
+</script>
+</body>
+</html>
